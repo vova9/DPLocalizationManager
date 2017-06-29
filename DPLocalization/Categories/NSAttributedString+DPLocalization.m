@@ -112,9 +112,7 @@
     
     NSTextCheckingResult *kerningCheck = [kerningExp firstMatchInString:styleString options:kNilOptions range:allStringRange];
     if (kerningCheck) {
-        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-        style.paragraphKerning = [[styleString substringWithRange:[kerningCheck rangeAtIndex:1]] floatValue];
-        [attrs setValue:style forKey:NSKernAttributeName];
+        [attrs setValue:@([[styleString substringWithRange:[kerningCheck rangeAtIndex:1]] floatValue]) forKey:NSKernAttributeName];
     }
 
     DPFont *styleFont = font ? [DPFont fontWithName:fontName size:fontSize] : nil;
