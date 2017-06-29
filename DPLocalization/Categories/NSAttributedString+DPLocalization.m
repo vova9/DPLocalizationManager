@@ -81,7 +81,7 @@
         sizeExp = [NSRegularExpression regularExpressionWithPattern:@"size=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
         linkExp = [NSRegularExpression regularExpressionWithPattern:@"link=\"(.+?)\"" options:NSRegularExpressionCaseInsensitive error:nil];
         paragraphSpacingExp = [NSRegularExpression regularExpressionWithPattern:@"paragraph_spacing=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
-        paragraphSpacingExp = [NSRegularExpression regularExpressionWithPattern:@"line_spacing=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
+        lineSpacingExp = [NSRegularExpression regularExpressionWithPattern:@"line_spacing=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
         kerningExp = [NSRegularExpression regularExpressionWithPattern:@"kerning=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
     });
 
