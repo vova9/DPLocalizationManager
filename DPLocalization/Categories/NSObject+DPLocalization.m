@@ -209,6 +209,7 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 - (void)setAutolocalizationTitle:(NSString *)title {
     if ([self isAttributedKey]) {
         NSAttributedString *string = [NSAttributedString dp_attibutedStringWithString:title font:self.titleLabel.font textColor:[self titleColorForState:UIControlStateNormal]];
+        self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self setAttributedTitle:string forState:UIControlStateNormal];
     }
     else {
