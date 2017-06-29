@@ -70,6 +70,7 @@
     static NSRegularExpression *traitsExp = nil;
     static NSRegularExpression *linkExp = nil;
     static NSRegularExpression *spacingExp = nil;
+    static NSRegularExpression *kerningExp = nil;
 
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -79,6 +80,7 @@
         sizeExp = [NSRegularExpression regularExpressionWithPattern:@"size=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
         linkExp = [NSRegularExpression regularExpressionWithPattern:@"link=\"(.+?)\"" options:NSRegularExpressionCaseInsensitive error:nil];
         spacingExp = [NSRegularExpression regularExpressionWithPattern:@"spacing=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
+        kerningExp = [NSRegularExpression regularExpressionWithPattern:@"kerning=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
     });
 
     NSRange allStringRange = NSMakeRange(0, styleString.length);
@@ -106,6 +108,13 @@
         NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         style.paragraphSpacing = [[styleString substringWithRange:[spacingCheck rangeAtIndex:1]] floatValue];
         [attrs setValue:style forKey:NSParagraphStyleAttributeName];
+    }
+    
+    NSTextCheckingResult *kerningCheck = [kerningExp firstMatchInString:styleString options:kNilOptions range:allStringRange];
+    if (kerningCheck) {
+        NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        style.paragraphKerning = [[styleString substringWithRange:[kerningCheck rangeAtIndex:1]] floatValue];
+        [attrs setValue:style forKey:NSKernAttributeName];
     }
 
     DPFont *styleFont = font ? [DPFont fontWithName:fontName size:fontSize] : nil;
