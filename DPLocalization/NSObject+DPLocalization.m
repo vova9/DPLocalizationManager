@@ -22,12 +22,12 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 
 
 @interface __AutolocOnDeallocContainer__ : NSObject
-@property (nonatomic, copy) void(^deallocBlock)();
+@property (nonatomic, copy) void(^deallocBlock)(void);
 @end
 
 @implementation __AutolocOnDeallocContainer__
 
-- (id)initWithBlock:(void(^)())block {
+- (id)initWithBlock:(void(^)(void))block {
     self = [super init];
     if (self) {
         self.deallocBlock = block;
@@ -94,7 +94,7 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 #pragma mark - Observation
 
 - (void)addLanguageDidChangeObserver {
-    void (^deallocBlock)() = objc_getAssociatedObject(self, (__bridge const void *)(kAutolocOnDeallocBlockKey));
+    void (^deallocBlock)(void) = objc_getAssociatedObject(self, (__bridge const void *)(kAutolocOnDeallocBlockKey));
     if (!deallocBlock) {
         NSObject * __unsafe_unretained selfWeak = self;
         id observer = [[NSNotificationCenter defaultCenter] addObserverForName:DPLanguageDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
@@ -183,7 +183,9 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 
 - (void)setLocalizedValue:(id)value forKeyPath:(NSString *)keyPath {
     if ([self isAttributedKey]) {
-        self.attributedText = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor];
+        NSMutableParagraphStyle *paragraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraph.alignment = self.textAlignment;
+        self.attributedText = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor paragraphStyle:paragraph];
     }
     else {
         [super setLocalizedValue:value forKeyPath:keyPath];
@@ -209,24 +211,10 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 - (void)setAutolocalizationTitle:(NSString *)title {
     if ([self isAttributedKey]) {
         NSAttributedString *string = [NSAttributedString dp_attibutedStringWithString:title font:self.titleLabel.font textColor:[self titleColorForState:UIControlStateNormal]];
-        self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self setAttributedTitle:string forState:UIControlStateNormal];
-        [self setAttributedTitleIfNecessary:title forState:UIControlStateHighlighted];
-        [self setAttributedTitleIfNecessary:title forState:UIControlStateSelected];
-        [self setAttributedTitleIfNecessary:title forState:UIControlStateDisabled];
     }
     else {
         [self setTitle:title forState:UIControlStateNormal];
-    }
-}
-
-- (void)setAttributedTitleIfNecessary:(NSString *)title forState:(UIControlState)state {
-    UIColor* colorNormalState = [self titleColorForState:UIControlStateNormal];
-    UIColor* colorDifferentState = [self titleColorForState:state];
-    BOOL result = [colorNormalState isEqual:colorDifferentState];
-    if (!result) {
-        NSAttributedString * string = [NSAttributedString dp_attibutedStringWithString:title font:self.titleLabel.font textColor:colorDifferentState];
-        [self setAttributedTitle:string forState:state];
     }
 }
 
@@ -244,6 +232,21 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 #pragma mark UIBarItem
 
 @implementation UIBarItem (DPLocalization)
+
+- (void)setAutolocalizationKey:(NSString *)autolocalizationKey {
+    [self setupAutolocalizationWithKey:autolocalizationKey keyPath:@"title"];
+}
+
+- (NSString *)autolocalizationKey {
+    return [self autolocKey];
+}
+
+@end
+
+
+#pragma mark UINavigationItem
+
+@implementation UINavigationItem (DPLocalization)
 
 - (void)setAutolocalizationKey:(NSString *)autolocalizationKey {
     [self setupAutolocalizationWithKey:autolocalizationKey keyPath:@"title"];
@@ -279,7 +282,9 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 
 - (void)setLocalizedValue:(id)value forKeyPath:(NSString *)keyPath {
     if ([self isAttributedKey]) {
-        self.attributedPlaceholder = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor];
+        NSMutableParagraphStyle *paragraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraph.alignment = self.textAlignment;
+        self.attributedPlaceholder = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor paragraphStyle:paragraph];
     }
     else {
         [super setLocalizedValue:value forKeyPath:keyPath];
@@ -312,13 +317,9 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 
 - (void)setLocalizedValue:(id)value forKeyPath:(NSString *)keyPath {
     if ([self isAttributedKey]) {
-        NSMutableAttributedString *attrStr = [[NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor] mutableCopy];
-
-        NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+        NSMutableParagraphStyle *paragraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         paragraph.alignment = self.textAlignment;
-        [attrStr addAttribute:NSParagraphStyleAttributeName value:paragraph range:NSMakeRange(0, attrStr.length)];
-
-        self.attributedText = attrStr;
+        self.attributedText = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor paragraphStyle:paragraph];
     }
     else {
         [super setLocalizedValue:value forKeyPath:keyPath];
@@ -493,7 +494,9 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 
 - (void)setLocalizedValue:(id)value forKeyPath:(NSString *)keyPath {
     if ([self isAttributedKey]) {
-        self.attributedTitle = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:nil];
+        NSMutableParagraphStyle *paragraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraph.alignment = self.alignment;
+        self.attributedTitle = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:nil paragraphStyle:paragraph];
     }
     else {
         [super setLocalizedValue:value forKeyPath:keyPath];
@@ -526,7 +529,9 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 
 - (void)setLocalizedValue:(id)value forKeyPath:(NSString *)keyPath {
     if ([self isAttributedKey]) {
-        self.attributedStringValue = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:nil];
+        NSMutableParagraphStyle *paragraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraph.alignment = self.alignment;
+        self.attributedStringValue = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:nil paragraphStyle:paragraph];
     }
     else {
         [super setLocalizedValue:value forKeyPath:keyPath];
@@ -550,10 +555,14 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 
 - (void)setLocalizedValue:(id)value forKeyPath:(NSString *)keyPath {
     if ([keyPath isEqualToString:@"stringValue"] && [self isAttributedKey]) {
-        self.attributedStringValue = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor];
+        NSMutableParagraphStyle *paragraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraph.alignment = self.alignment;
+        self.attributedStringValue = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor paragraphStyle:paragraph];
     }
     else if ([keyPath isEqualToString:@"placeholderString"] && [self isAttributedKey]) {
-        self.placeholderAttributedString = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor];
+        NSMutableParagraphStyle *paragraph = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        paragraph.alignment = self.alignment;
+        self.placeholderAttributedString = [NSAttributedString dp_attibutedStringWithString:value font:self.font textColor:self.textColor paragraphStyle:paragraph];
     }
     else {
         [super setLocalizedValue:value forKeyPath:keyPath];

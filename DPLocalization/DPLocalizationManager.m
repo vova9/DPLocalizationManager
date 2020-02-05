@@ -165,8 +165,11 @@ NSString * const DPLanguagePreferenceKey = @"DPLanguageKey";
     NSString *tableName = [table length] ? table : self.defaultStringTableName;
     [self loadTableNamedIfNeeded:tableName];
 
-    NSString *result = result = self.tables[tableName][key];
-    return result ?: [self.defaultBundle localizedStringForKey:key value:@"" table:tableName];
+    NSString *result = self.tables[tableName][key];
+    if (result == nil) {
+        return [[NSBundle mainBundle] localizedStringForKey:key value:@"" table:tableName];
+    }
+    return result;
 }
 
 - (NSString *)localizedStringForKey:(NSString *)key table:(NSString *)table arguments:(NSArray *)arguments {
@@ -239,7 +242,7 @@ NSString * const DPLanguagePreferenceKey = @"DPLanguageKey";
         NSString *localizationPath = [NSString stringWithFormat:@"%@.lproj", self.currentLanguage];
 #if DPLocalization_UIKit
         NSString *imageNamePath = [localizationPath stringByAppendingPathComponent:name];
-        result = [DPImage imageNamed:imageNamePath];
+        result = [DPImage imageNamed:imageNamePath inBundle:[self defaultBundle] compatibleWithTraitCollection:nil];
 #elif DPLocalization_AppKit
         NSString *resourcePath = [self.defaultBundle resourcePath] ?: self.defaultBundle.bundlePath;
         NSString *bundlePath = [resourcePath stringByAppendingPathComponent:localizationPath];
@@ -247,7 +250,11 @@ NSString * const DPLanguagePreferenceKey = @"DPLanguageKey";
 #endif
     }
     
-    return result ? result : [DPImage imageNamed:name];
+#if DPLocalization_UIKit
+    return result ? result : [DPImage imageNamed:name inBundle:[self defaultBundle] compatibleWithTraitCollection:nil];
+#elif DPLocalization_AppKit
+    return result ? result : [[self defaultBundle] imageForResource:name];
+#endif
 }
 
 - (NSString *)localizedPathForResource:(NSString *)name ofType:(NSString *)extension bundle:(NSBundle *)bundle {

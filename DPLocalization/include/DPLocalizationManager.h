@@ -23,6 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString * _Nullable currentLanguage;
 
 /**
+@property usedLanguage
+@brief Current selected language or [DPLocalizationManager preferredLanguage] if 'currentLanguage' not set.
+*/
+@property (nonatomic, readonly) NSString * usedLanguage;
+
+/**
  @property defaultStringsTableName
  @brief Default bundle used for localization.
  */
@@ -92,7 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return Array of language codes (i.e.: "en", "ru", "fr" and etc.) or empty array if no language found.
  */
-+ (NSArray *)supportedLanguages;
++ (NSArray<NSString *> *)supportedLanguages;
 
 /**
  @brief Return code for preferred application language.
@@ -129,7 +135,7 @@ NSString * DPAutolocalizedStringFromTable(NSString *key, NSString * _Nullable ta
 /**
  @return The result is invoking of [[DPLocalizationManager currentManager] currentLanguage];
  */
-NSString * _Nullable dp_get_current_language();
+NSString * _Nullable dp_get_current_language(void);
 
 /**
  @brief Equal to [[DPLocalizationManager currentManager] setCurrentLanguage:lang];
@@ -147,10 +153,10 @@ NSString * _Nullable dp_get_language_display_name(NSString *lang);
 /**
  @return    The result is invoking of dp_get_language_display_name(dp_get_current_language())
  */
-NSString * _Nullable dp_get_current_language_display_name();
+NSString * _Nullable dp_get_current_language_display_name(void);
 
 
-NSString * dp_get_current_filename() DEPRECATED_MSG_ATTRIBUTE("Use 'defaultStringTableName' property instead. This function will be removed in further releases.");
+NSString * dp_get_current_filename(void) DEPRECATED_MSG_ATTRIBUTE("Use 'defaultStringTableName' property instead. This function will be removed in further releases.");
 void dp_set_current_filename(NSString *filename) DEPRECATED_MSG_ATTRIBUTE("Use 'defaultStringTableName' property instead. This function will be removed in further releases.");
 
 /**
