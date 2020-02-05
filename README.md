@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/nullic/DPLocalizationManager.svg)](https://travis-ci.org/nullic/DPLocalizationManager)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 [![Version](https://img.shields.io/cocoapods/v/DPLocalization.svg?style=flat)](http://cocoapods.org/pods/DPLocalization)
 [![License](https://img.shields.io/cocoapods/l/DPLocalization.svg?style=flat)](http://cocoapods.org/pods/DPLocalization)
 [![Platform](https://img.shields.io/cocoapods/p/DPLocalization.svg?style=flat)](http://cocoapods.org/pods/DPLocalization)
@@ -88,19 +90,51 @@ English {
 ```
 
 ### Avalible attributes:
-* **font** - set font name - ```<font=\"Courier-BoldOblique\">{string}```
+* **name** - set font name - ```<name=\"Courier-BoldOblique\">{string}```
 * **size** - set font size - ```<size=12.0>{string}``` or ```<size=12>{string}```
-* **color** - set text color in RGB or RGBA format - ```<color=12,56,189>{string}``` or ```<size=12,56,189,255>{string}```
-* **traits** - set font traits: **b** (bold), **i** (italic); and text attributes **u** (underline), **s** (strikethrough); **!** used for remove attibute - ```<traits=b>{string}``` or ```<traits=!b>{string}```
+* **color** - set text color in RGB or RGBA format - ```<color=12,56,189>{string}``` or ```<color=12,56,189,255>{string}```
+* **traits** - set font traits: **b** (bold), **i** (italic); and text attributes **u** (underline), **s** (strikethrough), **m** (monospace); **!** used for remove attibute - ```<traits=b>{string}``` or ```<traits=!b>{string}```
+* **kern** - set font kerning
 * **link** - set link attribute - ```<link=\"https://github.com/nullic/DPLocalizationManager\">{link to DPLocalizationManager}```
+* **spacing** - set space between paragraphs
+* **linespacing** - set space between lines
+* **alignment** - set alignment of paragraph <alignment=center>{Center\n}<alignment=left>{Left}. Valid values: **left** **center** **right** **justified** **natural**. Due to NSParagraphStyle behaviour each paragraph should be ended with **\n** and each section should have alignment if it is used in any place of localization string.
+
+
+
+## Replacements
+You can specify replacement using next format: [<**replacer**>]. This feature also reqire set ```isAttributedKey``` property to ```YES```.
+Example:
+```
+/* Localizable.strings */
+"TITLE_WITH_IMAGE" = "Title [<img=\"image_name_here\">]";
+```
+```
+UILabel *myLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+myLabel.autolocalizationKey = @"TITLE_WITH_IMAGE";
+myLabel.isAttributedKey = YES;
+```
+
+### Avalible replacers:
+* **img** - insert image named - ```[<img=\"image_name_here\"> size=(16,16) offset=(0,0)]``` - **size** and **offset** are optinal parameters. By default **size** is (image.width, image.height); **offset** is (0, font.descender)
 
 
 ## Installation
+
+**CocoaPods**
 
 DPLocalization is available through [CocoaPods](http://cocoapods.org), to install
 it simply add the following line to your Podfile:
 
     pod "DPLocalization"
+
+**Carthage**
+
+To integrate DPLocalization into your Xcode project using Carthage, specify it in your `Cartfile`:
+
+    github "nullic/DPLocalizationManager"
+
+Run `carthage update` to build the framework and drag the built `DPLocalization.framework` into your Xcode project.
 
 
 ## Localization check
@@ -110,11 +144,6 @@ dpstrings.py it is Python script, that used for checking most common usage of li
 Usage example: **python dpstrings.py -p "MyProjectPath" -l "en;ru;"**.<br/>
 For more information: **python dpstrings.py --help**.
 
-
-## Known issues
-
-```-[DPLocalizationManager localizedImageNamed:]``` always return value from ```mainBundle``` instead of ```defaultBundle```.
- 
  
 ## License
 

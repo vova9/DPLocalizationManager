@@ -1,5 +1,33 @@
 # DPLocalization CHANGELOG
 
+## 1.13
+- Added 'Swift Package Mannager' support 
+
+## 1.12.1
+- Fixed issue: Image localization don't use default bundle if language not selected
+
+## 1.12
+- Increase minimum iOS version to 8.0
+- Fixed issue: ```-[DPLocalizationManager localizedImageNamed:]``` always return value from ```mainBundle``` instead of ```defaultBundle```.
+
+## 1.11
+- Added 'monospace' trait
+
+## 1.10
+- Added kern attribute
+- Added linespacing attribute
+
+## 1.9.3
+- Use string from mainBundle if it was not found in default
+
+## 1.9.1
+- Fixed issue with paragraph style
+
+## 1.9
+- Added spacing attribute
+- Added alignement attribute
+- Added image replacer
+
 ## 1.8.3
 - Added nullability
 - Added Swift project example
