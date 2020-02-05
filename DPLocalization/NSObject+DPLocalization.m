@@ -211,10 +211,24 @@ static NSString * const kAutolocAttributedFlagKey = @"autolocAttributedFlag";
 - (void)setAutolocalizationTitle:(NSString *)title {
     if ([self isAttributedKey]) {
         NSAttributedString *string = [NSAttributedString dp_attibutedStringWithString:title font:self.titleLabel.font textColor:[self titleColorForState:UIControlStateNormal]];
+        self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self setAttributedTitle:string forState:UIControlStateNormal];
+        [self setAttributedTitleIfNecessary:title forState:UIControlStateHighlighted];
+        [self setAttributedTitleIfNecessary:title forState:UIControlStateSelected];
+        [self setAttributedTitleIfNecessary:title forState:UIControlStateDisabled];
     }
     else {
         [self setTitle:title forState:UIControlStateNormal];
+    }
+}
+
+- (void)setAttributedTitleIfNecessary:(NSString *)title forState:(UIControlState)state {
+    UIColor* colorNormalState = [self titleColorForState:UIControlStateNormal];
+    UIColor* colorDifferentState = [self titleColorForState:state];
+    BOOL result = [colorNormalState isEqual:colorDifferentState];
+    if (!result) {
+        NSAttributedString * string = [NSAttributedString dp_attibutedStringWithString:title font:self.titleLabel.font textColor:colorDifferentState];
+        [self setAttributedTitle:string forState:state];
     }
 }
 
