@@ -87,10 +87,10 @@
         traitsExp = [NSRegularExpression regularExpressionWithPattern:@"traits=([!buism]+)" options:NSRegularExpressionCaseInsensitive error:nil];
         sizeExp = [NSRegularExpression regularExpressionWithPattern:@"size=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
         linkExp = [NSRegularExpression regularExpressionWithPattern:@"link=\"(.+?)\"" options:NSRegularExpressionCaseInsensitive error:nil];
-        spacingExp = [NSRegularExpression regularExpressionWithPattern:@"spacing=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
-        lineSpacingExp = [NSRegularExpression regularExpressionWithPattern:@"linespacing=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
+        spacingExp = [NSRegularExpression regularExpressionWithPattern:@"paragraph_spacing=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
+        lineSpacingExp = [NSRegularExpression regularExpressionWithPattern:@"line_spacing=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
         alignmentExp = [NSRegularExpression regularExpressionWithPattern:@"alignment=(left|center|right|justified|natural)" options:NSRegularExpressionCaseInsensitive error:nil];
-        kerningExp = [NSRegularExpression regularExpressionWithPattern:@"kern=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
+        kerningExp = [NSRegularExpression regularExpressionWithPattern:@"kerning=([0-9.]+)" options:NSRegularExpressionCaseInsensitive error:nil];
     });
 
     NSRange allStringRange = NSMakeRange(0, styleString.length);
